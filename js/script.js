@@ -1,8 +1,6 @@
 if (localStorage.length != 0) {
-  alert("Зашел в if");
   var model = JSON.parse(localStorage.getItem("key"));
 } else {
-  alert("Зашел в else");
   var model = {
     items: [{
         description: "Купить хлеб",
