@@ -37,8 +37,7 @@ taskListApp.controller("taskListController", function($scope) {
     localStorage.setItem("key", JSON.stringify(model));
   }
   $scope.editItem = function(editIndex) {
-    document.getElementById('inputElement').setAttribute("value",
-      $scope.list.items[editIndex].description);
+    document.getElementById('inputElement').value = $scope.list.items[editIndex].description;
     tempIndex = editIndex;
   }
   $scope.saveChanges = function(text) {
