@@ -38,7 +38,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="item in list.items track by $index" ng-model="to-do">
+        <tr ng-repeat="item in list.items track by $index">
           <td>{{item.description}}</td>
           <td>
             <p ng-click="editItem($index)">Edit</p>
@@ -49,7 +49,7 @@
     </table>
   </div>
   <script src="angular.min.js"></script>
-  <script src="script.js">
+  <script src="js/script.js">
   </script>
 </body>
 
