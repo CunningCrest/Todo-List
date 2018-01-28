@@ -1,4 +1,4 @@
-localStorage.clear();
+//localStorage.clear();
 if (localStorage.length != 0) {
   alert("Зашел в if");
   var model = JSON.parse(localStorage.getItem("key"));
