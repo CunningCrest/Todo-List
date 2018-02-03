@@ -1,6 +1,8 @@
 if (localStorage.length != 0) {
+  alert("Зашел в if");
   var model = JSON.parse(localStorage.getItem("key"));
 } else {
+  alert("Зашел в else");
   var model = {
     items: [{
         description: "Купить хлеб",
@@ -18,32 +20,32 @@ if (localStorage.length != 0) {
   };
   localStorage.setItem("key", JSON.stringify(model));
 }
-var taskListApp = angular.module("taskListApp", []);
-taskListApp.controller("taskListController", function($scope) {
-  var tempIndex;
-  $scope.list = model;
-  $scope.addItem = function(text) {
-    if (text != "") {
-      $scope.list.items.push({
-        description: text,
-      });
+angular.module("taskListApp", [])
+  .controller("taskListController", function($scope) {
+    var tempIndex;
+    $scope.list = model;
+    $scope.addItem = function(text) {
+      if (text != "") {
+        $scope.list.items.push({
+          description: text,
+        });
+        model = $scope.list;
+        localStorage.setItem("key", JSON.stringify(model));
+      }
+    }
+    $scope.removeItem = function(deleteIndex) {
+      $scope.list.items.splice(deleteIndex, 1);
       model = $scope.list;
       localStorage.setItem("key", JSON.stringify(model));
     }
-  }
-  $scope.removeItem = function(deleteIndex) {
-    $scope.list.items.splice(deleteIndex, 1);
-    model = $scope.list;
-    localStorage.setItem("key", JSON.stringify(model));
-  }
-  $scope.editItem = function(editIndex) {
-    document.getElementById('inputElement').value = $scope.list.items[editIndex].description;
-    tempIndex = editIndex;
-  }
-  $scope.saveChanges = function(text) {
-    $scope.list.items[tempIndex].description = text;
-    model = $scope.list;
-    localStorage.setItem("key", JSON.stringify(model));
-    document.getElementById('inputElement').value = "";
-  }
-});
+    $scope.editItem = function(editIndex) {
+      $scope.text = $scope.list.items[editIndex].description;
+      tempIndex = editIndex;
+    }
+    $scope.saveChanges = function(text) {
+      $scope.list.items[tempIndex].description = text;
+      model = $scope.list;
+      localStorage.setItem("key", JSON.stringify(model));
+      $scope.text = "";
+    }
+  });
