@@ -83,7 +83,7 @@ angular.module("taskListApp", [])
         }
       }
 
-      this.saveChanges = function(deleteIndex) {
+      this.saveChanges = function(text) {
         this.list.items[tempIndex].description = this.text;
         model = this.list;
         localStorage.setItem("key", JSON.stringify(model));
