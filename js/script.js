@@ -7,11 +7,9 @@ angular.module("taskListApp", [])
   .service('initialService', function() {
     this.initializeFunc = function() {
       if (localStorage.length != 0) {
-        alert("Зашел в if");
         var model = JSON.parse(localStorage.getItem("key"));
         return model;
       } else {
-        alert("Зашел в else");
         var model = {
           items: [{
               description: "Купить хлеб",
@@ -73,17 +71,17 @@ angular.module("taskListApp", [])
       text: '='
     },
     controller: function() {
-      this.addItem = function(text) {
-        if (text != "") {
+      this.addItem = function() {
+        if (this.text != "") {
           this.list.items.push({
-            description: text,
+            description: this.text,
           });
           model = this.list;
           localStorage.setItem("key", JSON.stringify(model));
         }
       }
 
-      this.saveChanges = function(text) {
+      this.saveChanges = function() {
         this.list.items[tempIndex].description = this.text;
         model = this.list;
         localStorage.setItem("key", JSON.stringify(model));
@@ -99,12 +97,12 @@ angular.module("taskListApp", [])
       </div>
       <div class="form-group">
         <div class="col-md-offset-2 col-md-8">
-          <button class="btn btn-default" ng-click="$ctrl.addItem($ctrl.text)">Добавить</button>
+          <button class="btn btn-default" ng-click="$ctrl.addItem()">Добавить</button>
         </div>
       </div>
       <div class="form-group">
         <div class="col-md-offset-2 col-md-8">
-          <button class="btn btn-default" ng-click="$ctrl.saveChanges($ctrl.text)">Редактировать</button>
+          <button class="btn btn-default" ng-click="$ctrl.saveChanges()">Редактировать</button>
         </div>
       </div>
     </div>
