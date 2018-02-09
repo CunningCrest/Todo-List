@@ -6,8 +6,8 @@ angular.module("taskListApp", [])
   })
   .service('initialService', function() {
     this.initializeFunc = function() {
-      if (localStorage.length != 0) {
-        var model = JSON.parse(localStorage.getItem("key"));
+      var model = JSON.parse(localStorage.getItem("key"));
+      if (model) {
         return model;
       } else {
         var model = {
