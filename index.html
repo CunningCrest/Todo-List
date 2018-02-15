@@ -12,12 +12,12 @@
   </div>
   <div class="panel">
     <div ng-controller="taskListController as vm">
-      <add-item list="vm.list" text="vm.text"></add-item>
-      <list-component list="vm.list" text="vm.text"></list-component>
+      <add-item text="vm.text" list="vm.list" add="vm.addItem(newText, newList)" save="vm.saveChanges(newText, newList)"></add-item>
+      <list list="vm.list" text="vm.text" edit="vm.edit(newText, editIndex, newList)" remove-item="vm.removeItem(newList, deleteIndex)"></list>
     </div>
   </div>
-  <script src="js/angular.min.js"></script>
-  <script src="js/script.js"></script>
+  <script src="angular.min.js"></script>
+  <script src="script.js"></script>
 </body>
 
 </html>
