@@ -4,7 +4,7 @@ angular.module("taskListApp", [])
     this.list = todoItemService.initializeFunc();
     this.text = "";
     this.edit = function(newText, editIndex, newList) {
-      todoItemService.edit(newText, editIndex, newList);
+      this.text = todoItemService.edit(newText, editIndex, newList);
     }
     this.addItem = function(newText, newList) {
       todoItemService.addItem(newText, newList);
@@ -64,6 +64,7 @@ angular.module("taskListApp", [])
     this.edit = function(newText, editIndex, newList) {
       newText = newList.items[editIndex].description;
       tempIndex = editIndex;
+      return newText;
     };
   })
   .component('item', {
