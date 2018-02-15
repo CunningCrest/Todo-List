@@ -1,10 +1,22 @@
 var tempIndex;
 angular.module("taskListApp", [])
-  .controller("taskListController", function($scope, initialService) {
-    this.list = initialService.initializeFunc();
+  .controller("taskListController", ["$scope", "todoItemService", function($scope, todoItemService) {
+    this.list = todoItemService.initializeFunc();
     this.text = "";
-  })
-  .service('initialService', function() {
+    this.edit = function(newText, editIndex, newList) {
+      todoItemService.edit(newText, editIndex, newList);
+    }
+    this.addItem = function(newText, newList) {
+      todoItemService.addItem(newText, newList);
+    }
+    this.saveChanges = function(newText, newList) {
+      todoItemService.saveChanges(newText, newList);
+    }
+    this.removeItem = function(newList, deleteIndex) {
+      todoItemService.removeItem(newList, deleteIndex);
+    }
+  }])
+  .service('todoItemService', function() {
     this.initializeFunc = function() {
       var model = JSON.parse(localStorage.getItem("key"));
       if (model) {
@@ -29,80 +41,90 @@ angular.module("taskListApp", [])
         return model;
       }
     }
-  })
-  .component('listComponent', {
-    bindings: {
-      list: '=',
-      text: '='
-    },
-    controller: function() {
-      this.editItem = function(editIndex) {
-        this.text = this.list.items[editIndex].description;
-        tempIndex = editIndex;
-      }
-
-      this.removeItem = function(deleteIndex) {
-        this.list.items.splice(deleteIndex, 1);
-        model = this.list;
+    this.addItem = function(newText, newList) {
+      if (newText != "") {
+        newList.items.push({
+          description: newText,
+        });
+        model = newList;
         localStorage.setItem("key", JSON.stringify(model));
       }
+    };
+    this.saveChanges = function(newText, newList) {
+      newList.items[tempIndex].description = newText;
+      model = newList;
+      localStorage.setItem("key", JSON.stringify(model));
+      newText = "";
+    };
+    this.removeItem = function(newList, deleteIndex) {
+      newList.items.splice(deleteIndex, 1);
+      model = newList;
+      localStorage.setItem("key", JSON.stringify(model));
+    };
+    this.edit = function(newText, editIndex, newList) {
+      newText = newList.items[editIndex].description;
+      tempIndex = editIndex;
+    };
+  })
+  .component('item', {
+    bindings: {
+      description: '=',
+      edit: '&',
+      delete: '&',
+      list: '=',
+      text: '=',
+      index: '='
     },
+    controller: function() {},
     template: `
-      <table class="table table-striped">
-        <tbody>
-          <tr ng-repeat="item in $ctrl.list.items track by $index">
-            <td>
-              {{item.description}}
-            </td>
-            <td>
-              <p ng-click="$ctrl.editItem($index)">Edit</p>
-            </td>
-            <td>
-              <p ng-click="$ctrl.removeItem($index)" style="cursor:pointer;">×</p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <td>{{$ctrl.description}}</td>
+      <td><p ng-click="$ctrl.edit({newText:$ctrl.text, editIndex:$ctrl.index, newList:$ctrl.list})">Edit</p></td>
+      <td><p ng-click="$ctrl.delete({newList:$ctrl.list, deleteIndex:$ctrl.index})" style="cursor:pointer;">×</p></td>
     `
+  })
+  .component('list', {
+    bindings: {
+      list: '=',
+      edit: '&',
+      removeItem: '&',
+      index: '=',
+      text: '=',
+      index: '='
+    },
+    controller: function() {},
+    template: `
+    <div class="items-list">
+    <h3></h3>
+    <ul class="items">
+      <li ng-repeat="currentItem in $ctrl.list.items track by $index">
+        <item description="currentItem.description" list="$ctrl.list" index="$index" text="$ctrl.text" delete="$ctrl.removeItem({newList: newList, deleteIndex: deleteIndex})" edit="$ctrl.edit({newText: newText, editIndex: editIndex, newList: newList})"></item>
+      </li>
+    </ul>
+    </div>
   })
   .component('addItem', {
     bindings: {
-      list: '=',
-      text: '='
+      text: '=',
+      add: '&',
+      save: '&',
+      list: '='
     },
-    controller: function() {
-      this.addItem = function() {
-        if (this.text != "") {
-          this.list.items.push({
-            description: this.text,
-          });
-          model = this.list;
-          localStorage.setItem("key", JSON.stringify(model));
-        }
-      }
-
-      this.saveChanges = function() {
-        this.list.items[tempIndex].description = this.text;
-        model = this.list;
-        localStorage.setItem("key", JSON.stringify(model));
-        this.text = "";
-      }
-    },
+    controller: function() {},
     template: `
     <div class="form-inline">
       <div class="form-group">
         <div class="col-md-6">
-          <input class="form-control" id="inputElement" ng-model="$ctrl.text" placeholder="Информация о заметке" />
+          <input class="form-control"  ng-model="$ctrl.text" placeholder="Информация о заметке" />
         </div>
       </div>
       <div class="form-group">
         <div class="col-md-offset-2 col-md-8">
-          <button class="btn btn-default" ng-click="$ctrl.addItem()">Добавить</button>
+          <button class="btn btn-default" ng-click="$ctrl.add({newText:$ctrl.text, newList:$ctrl.list})">Добавить</button>
         </div>
       </div>
       <div class="form-group">
         <div class="col-md-offset-2 col-md-8">
-          <button class="btn btn-default" ng-click="$ctrl.saveChanges()">Редактировать</button>
+          <button class="btn btn-default" ng-click="$ctrl.save({newText:$ctrl.text, newList:$ctrl.list})">Редактировать</button>
         </div>
       </div>
     </div>
