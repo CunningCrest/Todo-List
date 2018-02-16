@@ -102,6 +102,7 @@ angular.module("taskListApp", [])
       </li>
     </ul>
     </div>
+    `
   })
   .component('addItem', {
     bindings: {
